@@ -25,6 +25,8 @@ import { useSpaceX } from "../utils/use-space-x";
 import { formatDateTime } from "../utils/format-date";
 import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
+import { useFavorite } from "../utils/indexed-db";
+import FavoriteButton from "./favorite-button";
 
 export default function Launch() {
   let { launchId } = useParams();
@@ -50,6 +52,7 @@ export default function Launch() {
       />
       <Header launch={launch} />
       <Box m={[3, 6]}>
+        <Toolbar launch={launch} />
         <TimeAndLocation launch={launch} />
         <RocketInfo launch={launch} />
         <Text color="gray.700" fontSize={["md", null, "lg"]} my="8">
@@ -59,6 +62,15 @@ export default function Launch() {
         <Gallery images={launch.links.flickr_images} />
       </Box>
     </div>
+  );
+}
+
+function Toolbar({ launch }) {
+  const favorite = useFavorite("favorites-launches", launch);
+  return (
+    <Flex mb="4" justifyContent="flex-end">
+      <FavoriteButton showText {...favorite} />
+    </Flex>
   );
 }
 
@@ -84,6 +96,7 @@ function Header({ launch }) {
         objectFit="contain"
         objectPosition="bottom"
       />
+
       <Heading
         color="white"
         display="inline"
@@ -95,6 +108,7 @@ function Header({ launch }) {
       >
         {launch.mission_name}
       </Heading>
+
       <Stack isInline spacing="3">
         <Badge variantColor="purple" fontSize={["xs", "md"]}>
           #{launch.flight_number}

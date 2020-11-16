@@ -48,10 +48,7 @@ export default function Launches() {
 }
 
 export function LaunchItem({ launch }) {
-  const favorite = useFavorite("favorites-launches", launch.flight_number, {
-    flight_number: launch.flight_number,
-    mission_name: launch.mission_name,
-  });
+  const favorite = useFavorite("favorites-launches", launch);
 
   return (
     <Box

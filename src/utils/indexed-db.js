@@ -18,26 +18,54 @@ export const DBConfig = {
   ],
 };
 
-export function useFavorite(storeName, id, item) {
+function getMinimalFavoriteData(storeName, item) {
+  switch (storeName) {
+    case "favorites-launches":
+      return {
+        flight_number: item.flight_number,
+        mission_name: item.mission_name,
+      };
+    case "favorites-launchpads":
+      return {
+        id: item.id,
+        name: item.name,
+      };
+    default:
+      throw new Error(`Unrecognized store name: ${storeName}`);
+  }
+}
+
+function getFavoriteId(storeName, item) {
+  switch (storeName) {
+    case "favorites-launches":
+      return item.flight_number;
+    case "favorites-launchpads":
+      return item.id;
+    default:
+      throw new Error(`Unrecognized store name: ${storeName}`);
+  }
+}
+
+export function useFavorite(storeName, item) {
   const { getByID, add, deleteRecord } = useIndexedDB(storeName);
 
   const [isFavorite, setIsFavorite] = useState(false);
   useEffect(() => {
     async function fetchItem() {
-      const item = await getByID(id);
-      setIsFavorite(Boolean(item));
+      const result = await getByID(getFavoriteId(storeName, item));
+      setIsFavorite(Boolean(result));
     }
     fetchItem();
-  }, [getByID, id]);
+  }, [getByID, storeName, item]);
 
   const addFavorite = async (event) => {
     event.preventDefault();
-    await add(item);
+    await add(getMinimalFavoriteData(storeName, item));
     setIsFavorite(true);
   };
   const removeFavorite = async (event) => {
     event.preventDefault();
-    await deleteRecord(id);
+    await deleteRecord(getFavoriteId(storeName, item));
     setIsFavorite(false);
   };
 
