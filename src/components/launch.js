@@ -25,7 +25,7 @@ import { useSpaceX } from "../utils/use-space-x";
 import { formatDateTime } from "../utils/format-date";
 import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
-import { useFavorite } from "../utils/indexed-db";
+import { useFavorite } from "../utils/use-favorites";
 import FavoriteButton from "./favorite-button";
 
 export default function Launch() {
@@ -66,7 +66,7 @@ export default function Launch() {
 }
 
 function Toolbar({ launch }) {
-  const favorite = useFavorite("favorites-launches", launch);
+  const favorite = useFavorite("launches", launch);
   return (
     <Flex mb="4" justifyContent="flex-end">
       <FavoriteButton showText {...favorite} />

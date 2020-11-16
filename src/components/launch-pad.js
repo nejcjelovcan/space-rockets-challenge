@@ -21,7 +21,7 @@ import { useSpaceX } from "../utils/use-space-x";
 import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
 import { LaunchItem } from "./launches";
-import { useFavorite } from "../utils/indexed-db";
+import { useFavorite } from "../utils/use-favorites";
 import FavoriteButton from "./favorite-button";
 
 export default function LaunchPad() {
@@ -114,7 +114,7 @@ function Header({ launchPad }) {
 }
 
 function Toolbar({ launchPad }) {
-  const favorite = useFavorite("favorites-launchpads", launchPad);
+  const favorite = useFavorite("launchpads", launchPad);
   return (
     <Flex mb="4" justifyContent="flex-end">
       <FavoriteButton showText {...favorite} />

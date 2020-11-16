@@ -1,24 +1,31 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "@chakra-ui/core";
-import { Star } from "react-feather";
+import { Star, XCircle } from "react-feather";
 
 export default function FavoriteButton({
   isFavorite,
   addFavorite,
   removeFavorite,
   showText,
+  removeOnly,
   ...buttonProps
 }) {
   const display = isFavorite ? "Remove from Favorites" : "Add to Favorites";
+  const onClick = useCallback(
+    isFavorite ? removeFavorite : addFavorite,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isFavorite]
+  );
+
   return (
     <Button
       title={display}
       variant="solid"
-      variantColor={isFavorite ? "yellow" : "gray"}
-      onClick={isFavorite ? removeFavorite : addFavorite}
+      variantColor={removeOnly ? "red" : isFavorite ? "yellow" : "gray"}
+      onClick={onClick}
       {...buttonProps}
     >
-      <Star />
+      {removeOnly ? <XCircle /> : <Star />}
       {showText && `\xa0${display}`}
     </Button>
   );
