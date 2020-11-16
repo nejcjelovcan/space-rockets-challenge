@@ -8,6 +8,8 @@ import { formatDate } from "../utils/format-date";
 import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
 import LoadMoreButton from "./load-more-button";
+import { useFavorite } from "../utils/indexed-db";
+import FavoriteButton from "./favorite-button";
 
 const PAGE_SIZE = 12;
 
@@ -46,6 +48,11 @@ export default function Launches() {
 }
 
 export function LaunchItem({ launch }) {
+  const favorite = useFavorite("favorites-launches", launch.flight_number, {
+    flight_number: launch.flight_number,
+    mission_name: launch.mission_name,
+  });
+
   return (
     <Box
       as={Link}
@@ -77,6 +84,8 @@ export function LaunchItem({ launch }) {
         objectFit="contain"
         objectPosition="bottom"
       />
+
+      <FavoriteButton position="absolute" right="5" bottom="5" {...favorite} />
 
       <Box p="6">
         <Box d="flex" alignItems="baseline">
