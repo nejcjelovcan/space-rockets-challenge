@@ -1,29 +1,28 @@
-import React from "react";
-import { useParams } from "react-router-dom";
-import { MapPin, Navigation } from "react-feather";
 import {
+  AspectRatioBox,
+  Badge,
+  Box,
   Flex,
   Heading,
-  Badge,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
   SimpleGrid,
-  Box,
-  Text,
   Spinner,
   Stack,
-  AspectRatioBox,
+  Stat,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
 } from "@chakra-ui/core";
-
+import React from "react";
+import { MapPin, Navigation } from "react-feather";
+import { useFavorite } from "../utils/use-favorites";
 import { useSpaceX } from "../utils/use-space-x";
-import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
+import Error from "./error";
+import FavoriteButton from "./favorite-button";
 import { LaunchItem } from "./launches";
 
-export default function LaunchPad() {
-  let { launchPadId } = useParams();
+export default function LaunchPad({ launchPadId }) {
   const { data: launchPad, error } = useSpaceX(`/launchpads/${launchPadId}`);
 
   const { data: launches } = useSpaceX(launchPad ? "/launches/past" : null, {
@@ -47,12 +46,13 @@ export default function LaunchPad() {
       <Breadcrumbs
         items={[
           { label: "Home", to: "/" },
-          { label: "Launch Pads", to: ".." },
+          { label: "Launch Pads", to: "/launch-pads" },
           { label: launchPad.name },
         ]}
       />
       <Header launchPad={launchPad} />
       <Box m={[3, 6]}>
+        <Toolbar launchPad={launchPad} />
         <LocationAndVehicles launchPad={launchPad} />
         <Text color="gray.700" fontSize={["md", null, "lg"]} my="8">
           {launchPad.details}
@@ -106,6 +106,15 @@ function Header({ launchPad }) {
           </Badge>
         )}
       </Stack>
+    </Flex>
+  );
+}
+
+function Toolbar({ launchPad }) {
+  const favorite = useFavorite("launchpads", launchPad);
+  return (
+    <Flex mb="4" justifyContent="flex-end">
+      <FavoriteButton showText {...favorite} />
     </Flex>
   );
 }

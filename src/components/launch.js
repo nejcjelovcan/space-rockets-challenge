@@ -1,34 +1,39 @@
-import React from "react";
-import { useParams, Link as RouterLink } from "react-router-dom";
-import { format as timeAgo } from "timeago.js";
-import { Watch, MapPin, Navigation, Layers } from "react-feather";
 import {
+  AspectRatioBox,
+  Badge,
+  Box,
   Flex,
   Heading,
-  Badge,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  SimpleGrid,
-  Box,
-  Text,
-  Spinner,
   Image,
   Link,
+  SimpleGrid,
+  Spinner,
   Stack,
-  AspectRatioBox,
+  Stat,
   StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
+  Tooltip,
 } from "@chakra-ui/core";
-
+import NextLink from "next/link";
+import React from "react";
+import { Layers, MapPin, Navigation, Watch } from "react-feather";
+import { format as timeAgo } from "timeago.js";
+import { formatDateTime, formatDateTimeWithOffset } from "../utils/format-date";
+import { useFavorite } from "../utils/use-favorites";
 import { useSpaceX } from "../utils/use-space-x";
-import { formatDateTime } from "../utils/format-date";
-import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
+import Error from "./error";
+import FavoriteButton from "./favorite-button";
 
-export default function Launch() {
-  let { launchId } = useParams();
-  const { data: launch, error } = useSpaceX(`/launches/${launchId}`);
+export default function Launch({ launchId, initialData }) {
+  const { data: launch, error } = useSpaceX(
+    `/launches/${launchId}`,
+    {},
+    initialData
+  );
 
   if (error) return <Error />;
   if (!launch) {
@@ -44,12 +49,13 @@ export default function Launch() {
       <Breadcrumbs
         items={[
           { label: "Home", to: "/" },
-          { label: "Launches", to: ".." },
+          { label: "Launches", to: "/launches" },
           { label: `#${launch.flight_number}` },
         ]}
       />
       <Header launch={launch} />
       <Box m={[3, 6]}>
+        <Toolbar launch={launch} />
         <TimeAndLocation launch={launch} />
         <RocketInfo launch={launch} />
         <Text color="gray.700" fontSize={["md", null, "lg"]} my="8">
@@ -59,6 +65,15 @@ export default function Launch() {
         <Gallery images={launch.links.flickr_images} />
       </Box>
     </div>
+  );
+}
+
+function Toolbar({ launch }) {
+  const favorite = useFavorite("launches", launch);
+  return (
+    <Flex mb="4" justifyContent="flex-end">
+      <FavoriteButton showText {...favorite} />
+    </Flex>
   );
 }
 
@@ -84,6 +99,7 @@ function Header({ launch }) {
         objectFit="contain"
         objectPosition="bottom"
       />
+
       <Heading
         color="white"
         display="inline"
@@ -95,6 +111,7 @@ function Header({ launch }) {
       >
         {launch.mission_name}
       </Heading>
+
       <Stack isInline spacing="3">
         <Badge variantColor="purple" fontSize={["xs", "md"]}>
           #{launch.flight_number}
@@ -124,7 +141,9 @@ function TimeAndLocation({ launch }) {
           </Box>
         </StatLabel>
         <StatNumber fontSize={["md", "xl"]}>
-          {formatDateTime(launch.launch_date_local)}
+          <Tooltip label={formatDateTime(launch.launch_date_local)}>
+            {formatDateTimeWithOffset(launch.launch_date_local)}
+          </Tooltip>
         </StatNumber>
         <StatHelpText>{timeAgo(launch.launch_date_utc)}</StatHelpText>
       </Stat>
@@ -137,8 +156,8 @@ function TimeAndLocation({ launch }) {
         </StatLabel>
         <StatNumber fontSize={["md", "xl"]}>
           <Link
-            as={RouterLink}
-            to={`/launch-pads/${launch.launch_site.site_id}`}
+            as={NextLink}
+            href={`/launch-pads/${launch.launch_site.site_id}`}
           >
             {launch.launch_site.site_name_long}
           </Link>

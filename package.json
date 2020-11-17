@@ -1,6 +1,6 @@
 {
   "name": "pleo-space-rockets-app",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "contributors": [
     "Maciek Pekala <maciek@pleo.io>",
     "Peter Scott <peter@pleo.io>"
@@ -11,20 +11,21 @@
     "@chakra-ui/core": "^0.8.0",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
+    "dexie": "^3.0.2",
     "emotion-theming": "^10.0.27",
+    "next": "^10.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.8",
-    "react-router": "^6.0.0-alpha.3",
-    "react-router-dom": "^6.0.0-alpha.3",
     "react-scripts": "3.4.3",
     "swr": "^0.3.0",
     "timeago.js": "^4.0.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -40,5 +41,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^10.0.1"
   }
 }
