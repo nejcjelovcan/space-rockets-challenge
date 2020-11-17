@@ -22,6 +22,7 @@ function PageLink({ url, children, ...rest }) {
         boxShadow="md"
         borderWidth="1px"
         rounded="lg"
+        marginBottom="6"
       >
         <Text fontSize="lg">{children}</Text>
         <Box as={ArrowRight} />
