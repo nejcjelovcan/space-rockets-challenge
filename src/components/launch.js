@@ -1,37 +1,39 @@
-import React from "react";
-import { useParams, Link as RouterLink } from "react-router-dom";
-import { format as timeAgo } from "timeago.js";
-import { Watch, MapPin, Navigation, Layers } from "react-feather";
 import {
+  AspectRatioBox,
+  Badge,
+  Box,
   Flex,
   Heading,
-  Badge,
-  Stat,
-  StatLabel,
-  StatNumber,
-  StatHelpText,
-  SimpleGrid,
-  Box,
-  Text,
-  Spinner,
   Image,
   Link,
+  SimpleGrid,
+  Spinner,
   Stack,
-  AspectRatioBox,
+  Stat,
   StatGroup,
+  StatHelpText,
+  StatLabel,
+  StatNumber,
+  Text,
   Tooltip,
 } from "@chakra-ui/core";
-
-import { useSpaceX } from "../utils/use-space-x";
+import NextLink from "next/link";
+import React from "react";
+import { Layers, MapPin, Navigation, Watch } from "react-feather";
+import { format as timeAgo } from "timeago.js";
 import { formatDateTime, formatDateTimeWithOffset } from "../utils/format-date";
-import Error from "./error";
-import Breadcrumbs from "./breadcrumbs";
 import { useFavorite } from "../utils/use-favorites";
+import { useSpaceX } from "../utils/use-space-x";
+import Breadcrumbs from "./breadcrumbs";
+import Error from "./error";
 import FavoriteButton from "./favorite-button";
 
-export default function Launch() {
-  let { launchId } = useParams();
-  const { data: launch, error } = useSpaceX(`/launches/${launchId}`);
+export default function Launch({ launchId, initialData }) {
+  const { data: launch, error } = useSpaceX(
+    `/launches/${launchId}`,
+    {},
+    initialData
+  );
 
   if (error) return <Error />;
   if (!launch) {
@@ -47,7 +49,7 @@ export default function Launch() {
       <Breadcrumbs
         items={[
           { label: "Home", to: "/" },
-          { label: "Launches", to: ".." },
+          { label: "Launches", to: "/launches" },
           { label: `#${launch.flight_number}` },
         ]}
       />
@@ -154,8 +156,8 @@ function TimeAndLocation({ launch }) {
         </StatLabel>
         <StatNumber fontSize={["md", "xl"]}>
           <Link
-            as={RouterLink}
-            to={`/launch-pads/${launch.launch_site.site_id}`}
+            as={NextLink}
+            href={`/launch-pads/${launch.launch_site.site_id}`}
           >
             {launch.launch_site.site_name_long}
           </Link>
