@@ -2,9 +2,7 @@
 
 # ¡Space·Rockets! app
 
-### [👉 Go to the challenge 👈](./CHALLENGE.md)
-
-### [🚀 See the app in action 🚀](https://spacerockets.netlify.app)
+### [🚀 See the app in action 🚀](https://space-rockets-challenge-lilac.vercel.app/) (Hosted @ Vercel)
 
 ## Develop
 
@@ -12,7 +10,7 @@
 > [Yarn](https://classic.yarnpkg.com/en/) installed
 
 - run `yarn` to install dependencies
-- run `yarn start` to start development environment
+- run `yarn dev` to start development environment
 
 ## Build
 
@@ -20,9 +18,8 @@
 > [Yarn](https://classic.yarnpkg.com/en/) installed
 
 - run `yarn` to install dependencies
-- run `yarn build` to start development environment
-- output is in `build` directory,
-  [ready to be deployed](https://create-react-app.dev/docs/deployment/)
+- run `yarn build` to build
+- See [next.js documentation on deployment](https://nextjs.org/docs/deployment) or deploy using the [Vercel](https://vercel.com/) service
 
 ## Data
 
