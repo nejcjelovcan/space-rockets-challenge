@@ -11,11 +11,11 @@ export default function FavoriteButton({
   ...buttonProps
 }) {
   const display = isFavorite ? "Remove from Favorites" : "Add to Favorites";
-  const onClick = useCallback(
-    isFavorite ? removeFavorite : addFavorite,
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isFavorite]
-  );
+  const onClick = useCallback(isFavorite ? removeFavorite : addFavorite, [
+    isFavorite,
+    addFavorite,
+    removeFavorite,
+  ]);
 
   return (
     <Button
