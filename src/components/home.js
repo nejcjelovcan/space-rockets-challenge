@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Box, Text, Stack, Link } from "@chakra-ui/core";
 import { ArrowRight } from "react-feather";
-import { Link as BrowserLink } from "react-router-dom";
+import NextLink from "next/link";
 
 export default function Home() {
   return (
@@ -14,17 +14,19 @@ export default function Home() {
 
 function PageLink({ url, children, ...rest }) {
   return (
-    <Link as={BrowserLink} to={url} {...rest}>
+    <NextLink passHref href={url} {...rest}>
       <Flex
+        as={Link}
         justifyContent="space-between"
         p="6"
         boxShadow="md"
         borderWidth="1px"
         rounded="lg"
+        marginBottom="6"
       >
         <Text fontSize="lg">{children}</Text>
         <Box as={ArrowRight} />
       </Flex>
-    </Link>
+    </NextLink>
   );
 }

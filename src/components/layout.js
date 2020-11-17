@@ -9,32 +9,48 @@ import {
   Flex,
   Heading,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
 } from "@chakra-ui/core";
 import React from "react";
 import { List } from "react-feather";
-import { Route, Routes } from "react-router-dom";
 import { useFavorites } from "../utils/use-favorites";
-import Home from "./home";
-import Launch from "./launch";
-import LaunchPad from "./launch-pad";
-import LaunchPads, { LaunchPadItem } from "./launch-pads";
-import Launches, { LaunchItem } from "./launches";
+import { LaunchPadItem } from "./launch-pads";
+import { LaunchItem } from "./launches";
+import Head from "next/head";
+import { useRouter } from "next/router";
 
-export default function App() {
+export default function Layout({ title, description, image, url, children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const router = useRouter();
+
+  let titles = ["Space Rockets!"];
+  if (title) titles.unshift(title);
+  const finalTitle = titles.join(" — ");
+
   return (
     <div>
+      <Head>
+        <title>{finalTitle}</title>
+        <meta property="og:title" content={finalTitle} />
+        {description && <meta name="description" content={description} />}
+        {description && (
+          <meta property="og:description" content={description} />
+        )}
+        {image && <meta property="og:image" content={image} />}
+        {url && <meta property="og:url" content={url} />}
+      </Head>
       <NavBar openDrawer={onOpen} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/launches" element={<Launches />} />
-        <Route path="/launches/:launchId" element={<Launch />} />
-        <Route path="/launch-pads" element={<LaunchPads />} />
-        <Route path="/launch-pads/:launchPadId" element={<LaunchPad />} />
-      </Routes>
+      {router.isFallback ? (
+        <Flex justifyContent="center" p={10}>
+          <Spinner />
+        </Flex>
+      ) : (
+        children
+      )}
       <FavoritesDrawer isOpen={isOpen} onClose={onClose} />
     </div>
   );

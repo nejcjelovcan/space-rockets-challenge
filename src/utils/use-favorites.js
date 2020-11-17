@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import { useIndexedDB } from "react-indexed-db";
+import Dexie from "dexie";
 
 const InitialState = {
   launches: [],
@@ -74,11 +74,13 @@ function favoritesReducer(state, action) {
 }
 
 export function FavoritesProvider({ children }) {
+  var db = new Dexie("space-rockets-challenge");
+  db.version(1).stores({
+    "favorites-launches": ModelKey.launches,
+    "favorites-launchpads": ModelKey.launchpads,
+  });
+
   const [state, dispatch] = useReducer(favoritesReducer, InitialState);
-  const stores = {
-    launches: useIndexedDB("favorites-launches"),
-    launchpads: useIndexedDB("favorites-launchpads"),
-  };
 
   function isFavorite(model, item) {
     return Boolean(
@@ -87,18 +89,18 @@ export function FavoritesProvider({ children }) {
   }
   function addFavorite(model, item) {
     dispatch({ type: "addFavorite", model, item });
-    return stores[model].add(item);
+    return db[`favorites-${model}`].add(item);
   }
   function removeFavorite(model, item) {
     dispatch({ type: "removeFavorite", model, item });
-    return stores[model].deleteRecord(item[ModelKey[model]]);
+    return db[`favorites-${model}`].delete(item[ModelKey[model]]);
   }
   async function loadLaunches() {
-    const items = await stores.launches.getAll();
+    const items = await db["favorites-launches"].toArray();
     dispatch({ type: "setFavorites", model: "launches", items });
   }
   async function loadLaunchPads() {
-    const items = await stores.launchpads.getAll();
+    const items = await db["favorites-launchpads"].toArray();
     dispatch({ type: "setFavorites", model: "launchpads", items });
   }
 
@@ -116,20 +118,3 @@ export function FavoritesProvider({ children }) {
     </FavoritesContext.Provider>
   );
 }
-
-export const DBConfig = {
-  name: "space-rockets-challenge",
-  version: 1,
-  objectStoresMeta: [
-    {
-      store: "favorites-launches",
-      storeConfig: { keyPath: ModelKey.launches },
-      storeSchema: [],
-    },
-    {
-      store: "favorites-launchpads",
-      storeConfig: { keyPath: ModelKey.launchpads },
-      storeSchema: [],
-    },
-  ],
-};
