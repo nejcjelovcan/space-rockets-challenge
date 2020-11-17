@@ -21,6 +21,8 @@ import { useSpaceX } from "../utils/use-space-x";
 import Error from "./error";
 import Breadcrumbs from "./breadcrumbs";
 import { LaunchItem } from "./launches";
+import { useFavorite } from "../utils/use-favorites";
+import FavoriteButton from "./favorite-button";
 
 export default function LaunchPad() {
   let { launchPadId } = useParams();
@@ -53,6 +55,7 @@ export default function LaunchPad() {
       />
       <Header launchPad={launchPad} />
       <Box m={[3, 6]}>
+        <Toolbar launchPad={launchPad} />
         <LocationAndVehicles launchPad={launchPad} />
         <Text color="gray.700" fontSize={["md", null, "lg"]} my="8">
           {launchPad.details}
@@ -106,6 +109,15 @@ function Header({ launchPad }) {
           </Badge>
         )}
       </Stack>
+    </Flex>
+  );
+}
+
+function Toolbar({ launchPad }) {
+  const favorite = useFavorite("launchpads", launchPad);
+  return (
+    <Flex mb="4" justifyContent="flex-end">
+      <FavoriteButton showText {...favorite} />
     </Flex>
   );
 }
