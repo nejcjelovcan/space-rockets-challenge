@@ -9,6 +9,7 @@ import {
   Flex,
   Heading,
   SimpleGrid,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
@@ -19,12 +20,17 @@ import { useFavorites } from "../utils/use-favorites";
 import { LaunchPadItem } from "./launch-pads";
 import { LaunchItem } from "./launches";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function Layout({ title, description, image, url, children }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
+
+  const router = useRouter();
+
   let titles = ["Space Rockets!"];
   if (title) titles.unshift(title);
   const finalTitle = titles.join(" — ");
+
   return (
     <div>
       <Head>
@@ -38,7 +44,13 @@ export default function Layout({ title, description, image, url, children }) {
         {url && <meta property="og:url" content={url} />}
       </Head>
       <NavBar openDrawer={onOpen} />
-      {children}
+      {router.isFallback ? (
+        <Flex justifyContent="center" p={10}>
+          <Spinner />
+        </Flex>
+      ) : (
+        children
+      )}
       <FavoritesDrawer isOpen={isOpen} onClose={onClose} />
     </div>
   );
